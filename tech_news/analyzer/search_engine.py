@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+from datetime import datetime
 
 
 # Requisito 7
@@ -11,8 +12,14 @@ def search_by_title(title):
 
 # Requisito 8
 def search_by_date(date):
-    """Seu código deve vir aqui"""
-    raise NotImplementedError
+    try:
+        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        format_date = date_obj.strftime("%d/%m/%Y")
+        search_filter = {"timestamp": {"$regex": format_date}}
+        results = search_news(search_filter)
+        return [(result["title"], result["url"]) for result in results]
+    except ValueError:
+        raise ValueError("Data inválida")
 
 
 # Requisito 9
